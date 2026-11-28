@@ -1,0 +1,240 @@
+SOPPU MANE – REPLY TEMPLATES (Kannada first, English second)
+Use these as WhatsApp Business Quick replies (Business tools → Quick replies) and change the [brackets] each time.
+
+==============================
+1. ✅ Order confirmed   (shortcut: /confirm)
+==============================
+✅ *ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ*
+ನಮಸ್ಕಾರ [name]! ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ದೃಢೀಕರಿಸಲಾಗಿದೆ.
+
+🛒 *ಆರ್ಡರ್:*
+[items]
+
+💰 *ಒಟ್ಟು:* [total]
+📅 *ಡೆಲಿವರಿ ದಿನಾಂಕ:* [date]
+
+ಧನ್ಯವಾದಗಳು! 🙏
+
+━━━━━━━━━━━━━━
+
+✅ *Order confirmed*
+Hello [name]! Your order [order no] is confirmed.
+
+🛒 *Order:*
+[items]
+
+💰 *Total:* [total]
+📅 *Delivery date:* [date]
+
+Thank you! 🙏
+
+==============================
+2. ⚠️ Some items not available   (shortcut: /partial)
+==============================
+⚠️ *ಕೆಲವು ಸೊಪ್ಪು ಲಭ್ಯವಿಲ್ಲ*
+ನಮಸ್ಕಾರ [name], ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ರಲ್ಲಿ ಈ ಸೊಪ್ಪು ಈಗ ಲಭ್ಯವಿಲ್ಲ:
+[items not available]
+
+✅ ಉಳಿದ ಸೊಪ್ಪು ಕಳುಹಿಸುತ್ತೇವೆ:
+[items available]
+
+💰 *ಹೊಸ ಒಟ್ಟು:* [new total]
+📅 *ಡೆಲಿವರಿ ದಿನಾಂಕ:* [date]
+
+ಇದು ಸರಿಯೇ? ದಯವಿಟ್ಟು “ಹೌದು” ಎಂದು ತಿಳಿಸಿ. 🙏
+
+━━━━━━━━━━━━━━
+
+⚠️ *Some items are not available*
+Hello [name], sorry. In your order [order no] these are not available right now:
+[items not available]
+
+✅ We will send the rest:
+[items available]
+
+💰 *New total:* [new total]
+📅 *Delivery date:* [date]
+
+Is this OK? Please reply “Yes”. 🙏
+
+==============================
+3. ❌ Nothing available   (shortcut: /none)
+==============================
+❌ *ಸೊಪ್ಪು ಲಭ್ಯವಿಲ್ಲ*
+ನಮಸ್ಕಾರ [name], ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ರ ಸೊಪ್ಪು ಆ ದಿನ ಲಭ್ಯವಿಲ್ಲ.
+
+ಬೇರೆ ದಿನಾಂಕಕ್ಕೆ ಅಥವಾ ಬೇರೆ ಸೊಪ್ಪಿಗೆ ಆರ್ಡರ್ ಮಾಡಬಹುದು:
+👉 http://localhost:8766/
+
+ಧನ್ಯವಾದಗಳು! 🙏
+
+━━━━━━━━━━━━━━
+
+❌ *Not available*
+Hello [name], sorry. The soppu in your order [order no] is not available on that day.
+
+You can order for another date or choose other soppu:
+👉 http://localhost:8766/
+
+Thank you! 🙏
+
+==============================
+4. 📅 Order one day before   (shortcut: /oneday)
+==============================
+📅 *ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ*
+ನಮಸ್ಕಾರ [name], ಕ್ಷಮಿಸಿ. ಅದೇ ದಿನದ ಡೆಲಿವರಿ ಸಾಧ್ಯವಿಲ್ಲ. ತಾಜಾ ಸೊಪ್ಪಿಗಾಗಿ ನಾವು ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ತೆಗೆದುಕೊಳ್ಳುತ್ತೇವೆ.
+
+ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ಅನ್ನು ನಾಳೆ ಅಥವಾ ಬೇರೆ ದಿನಾಂಕಕ್ಕೆ ಮಾಡಬಹುದೇ? ದಯವಿಟ್ಟು ದಿನಾಂಕ ತಿಳಿಸಿ. 🙏
+
+━━━━━━━━━━━━━━
+
+📅 *Please order one day before*
+Hello [name], sorry. Same-day delivery is not possible. To keep the soppu fresh, we take orders one day before.
+
+Can we deliver your order [order no] tomorrow or on another date? Please tell us the date. 🙏
+
+==============================
+5. 📍 Outside delivery area   (shortcut: /area)
+==============================
+📍 *ಡೆಲಿವರಿ ಪ್ರದೇಶ*
+ನಮಸ್ಕಾರ [name], ಕ್ಷಮಿಸಿ. ನಾವು ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ ಡೆಲಿವರಿ ಮಾಡುತ್ತೇವೆ. ನಿಮ್ಮ ವಿಳಾಸ ([address]) ನಮ್ಮ ಡೆಲಿವರಿ ಪ್ರದೇಶದ ಹೊರಗೆ ಇದೆ.
+
+ಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. 🙏
+
+━━━━━━━━━━━━━━
+
+📍 *Delivery area*
+Hello [name], sorry. We deliver only around Chikkabettahalli. Your address ([address]) is outside our delivery area.
+
+Thank you for understanding. 🙏
+
+==============================
+6. 📍 Ask for location / address   (shortcut: /location)
+==============================
+📍 *ಲೊಕೇಶನ್ ಕಳುಹಿಸಿ*
+ನಮಸ್ಕಾರ [name], ಡೆಲಿವರಿಗಾಗಿ ದಯವಿಟ್ಟು ನಿಮ್ಮ ಮನೆಯ ಲೊಕೇಶನ್ ಕಳುಹಿಸಿ (📎 ಒತ್ತಿ → ಲೊಕೇಶನ್ → ಈಗಿನ ಲೊಕೇಶನ್) ಅಥವಾ ವಿಳಾಸವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಸಿ. 🙏
+
+━━━━━━━━━━━━━━
+
+📍 *Please share your location*
+Hello [name], for delivery please send your home location (tap 📎 → Location → Send your current location) or write your full address. 🙏
+
+==============================
+7. 💳 Payment details   (shortcut: /payment)
+==============================
+💳 *ಪಾವತಿ ವಿವರ*
+ನಮಸ್ಕಾರ [name], ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ಒಟ್ಟು: [total]
+
+UPI: [your UPI ID]
+
+ಪಾವತಿ ಮಾಡಿದ ನಂತರ ದಯವಿಟ್ಟು ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಿ. ಧನ್ಯವಾದಗಳು! 🙏
+
+━━━━━━━━━━━━━━
+
+💳 *Payment details*
+Hello [name], your order [order no] total: [total]
+
+UPI: [your UPI ID]
+
+After paying, please send a screenshot. Thank you! 🙏
+
+==============================
+8. ⏰ Delivery will be late   (shortcut: /delay)
+==============================
+⏰ *ಡೆಲಿವರಿ ಸ್ವಲ್ಪ ತಡ*
+ನಮಸ್ಕಾರ [name], ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ತಲುಪಲು ಸ್ವಲ್ಪ ತಡವಾಗಬಹುದು. ನಿಮ್ಮ ತಾಳ್ಮೆಗೆ ಧನ್ಯವಾದಗಳು. 🙏
+
+━━━━━━━━━━━━━━
+
+⏰ *Delivery will be a little late*
+Hello [name], sorry. Your order [order no] may reach you a little late. Thank you for your patience. 🙏
+
+==============================
+9. 🚚 Out for delivery   (shortcut: /out)
+==============================
+🚚 *ಆರ್ಡರ್ ಹೊರಟಿದೆ*
+ನಮಸ್ಕಾರ [name]! ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ಡೆಲಿವರಿಗಾಗಿ ಹೊರಟಿದೆ. ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಮನೆಗೆ ತಲುಪುತ್ತದೆ. 🌿
+
+━━━━━━━━━━━━━━
+
+🚚 *Out for delivery*
+Hello [name]! Your order [order no] is on its way and will reach your home soon. 🌿
+
+==============================
+10. 🎉 Delivered, thank you   (shortcut: /delivered)
+==============================
+🎉 *ಆರ್ಡರ್ ತಲುಪಿದೆ*
+ನಮಸ್ಕಾರ [name]! ನಿಮ್ಮ ಆರ್ಡರ್ [order no] ತಲುಪಿದೆ. ನಮ್ಮಿಂದ ಖರೀದಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು! 🙏
+
+ಸೊಪ್ಪು ಹೇಗಿತ್ತು? ನಿಮ್ಮ ಅನಿಸಿಕೆ ತಿಳಿಸಿ.
+ಮತ್ತೆ ಆರ್ಡರ್ ಮಾಡಲು: http://localhost:8766/
+
+━━━━━━━━━━━━━━
+
+🎉 *Delivered*
+Hello [name]! Your order [order no] has been delivered. Thank you for buying from us! 🙏
+
+How was the soppu? Please share your feedback.
+To order again: http://localhost:8766/
+
+==============================
+11. 🌿 Welcome + today's list   (shortcut: /welcome)
+==============================
+🌿 *ಸೊಪ್ಪು ಮನೆಗೆ ಸ್ವಾಗತ!*
+ನಮಸ್ಕಾರ [name]! ನಮ್ಮಲ್ಲಿ ಆಸಕ್ತಿ ತೋರಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. 🙏
+
+🛒 *ಇಂದಿನ ಸೊಪ್ಪು ಮತ್ತು ಬೆಲೆ (ಒಂದು ಕಟ್ಟಿಗೆ):*
+[today's list]
+
+📅 ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ
+📍 ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ ಡೆಲಿವರಿ
+
+👉 ಆರ್ಡರ್ ಮಾಡಲು: http://localhost:8766/
+
+━━━━━━━━━━━━━━
+
+🌿 *Welcome to Soppu Mane!*
+Hello [name]! Thank you for your interest. 🙏
+
+🛒 *Today's soppu and price (per bunch):*
+[today's list]
+
+📅 Please order one day before
+📍 Delivery only around Chikkabettahalli
+
+👉 To order: http://localhost:8766/
+
+==============================
+12. 📋 Today's list & prices   (shortcut: /pricelist)
+==============================
+🛒 *ಇಂದಿನ ಸೊಪ್ಪು ಮತ್ತು ಬೆಲೆ (ಒಂದು ಕಟ್ಟಿಗೆ):*
+[today's list]
+
+📅 ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ
+📍 ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ
+
+👉 ಆರ್ಡರ್ ಮಾಡಲು: http://localhost:8766/
+
+━━━━━━━━━━━━━━
+
+🛒 *Today's soppu and price (per bunch):*
+[today's list]
+
+📅 Please order one day before
+📍 Around Chikkabettahalli only
+
+👉 To order: http://localhost:8766/
+
+==============================
+13. 🙏 Thank you for your interest   (shortcut: /thanks)
+==============================
+🙏 *ಧನ್ಯವಾದಗಳು!*
+ನಮಸ್ಕಾರ [name]! ಸೊಪ್ಪು ಮನೆಯಲ್ಲಿ ಆಸಕ್ತಿ ತೋರಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. ನಿಮಗೆ ಬೇಕಾದಾಗ ಆರ್ಡರ್ ಮಾಡಿ, ತಾಜಾ ಸೊಪ್ಪು ಮನೆ ಬಾಗಿಲಿಗೆ ತಲುಪಿಸುತ್ತೇವೆ. 🌿
+👉 http://localhost:8766/
+
+━━━━━━━━━━━━━━
+
+🙏 *Thank you!*
+Hello [name]! Thank you for your interest in Soppu Mane. Order whenever you like, and we will bring fresh soppu to your door. 🌿
+👉 http://localhost:8766/
+

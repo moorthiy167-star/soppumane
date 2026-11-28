@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Soppu Mane – Reply to customers</title>
+<style>
+  :root{--green:#1f7a3d;--green-dark:#14572b;--leaf:#e8f5ec;--cream:#fbfaf3;--ink:#1d2a21;--muted:#5d6b62;--line:#d6e4da;--red:#b3261e;--accent:#f2a900}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Kannada",sans-serif;background:var(--cream);color:var(--ink);line-height:1.45}
+  header{background:var(--green-dark);color:#fff;padding:16px;text-align:center}
+  header h1{margin:0;font-size:1.25rem}
+  header a{color:var(--accent);font-weight:700;font-size:.9rem}
+  main{max-width:640px;margin:0 auto;padding:14px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+  h2{margin:0 0 6px;font-size:1.05rem;color:var(--green-dark)}
+  .help{margin:0 0 10px;color:var(--muted);font-size:.9rem}
+  label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 4px}
+  input,textarea,select{width:100%;padding:11px;border:1.5px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(31,122,61,.15)}
+  textarea{min-height:110px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn{border:1.5px solid var(--green);background:#fff;color:var(--green-dark);font:inherit;font-weight:700;border-radius:10px;padding:11px 12px;cursor:pointer}
+  .btn.main{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.wa{background:#25D366;border-color:#25D366;color:#fff;font-size:1.05rem;padding:14px}
+  .row{display:flex;gap:8px;margin-top:8px}.row .btn{flex:1}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .chips .btn{text-align:left;padding:10px;font-size:.9rem;line-height:1.3}
+  .chips .btn.on{background:var(--green);color:#fff}
+  .grp{margin:12px 0 6px;font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .parsed{background:var(--leaf);border-radius:10px;padding:10px 12px;font-size:.9rem;margin-top:10px;white-space:pre-line;display:none}
+  .note{font-size:.85rem;margin-top:6px;min-height:1.1em}
+  .bad{color:var(--red)} .good{color:var(--green-dark);font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <h1>📨 Reply to customers</h1>
+  <a href="admin.html">← Back to prices &amp; stock</a>
+</header>
+<main>
+
+  <div class="card">
+    <h2>1. Paste the customer's order</h2>
+    <p class="help">When an order arrives in WhatsApp, press and hold the message → <b>Copy</b>. Then tap <b>Paste order</b> here. Name, phone, items and total are read for you.</p>
+    <textarea id="orderText" placeholder="Paste the order message here…"></textarea>
+    <div class="row">
+      <button class="btn main" id="pasteBtn" type="button">📋 Paste order</button>
+      <button class="btn" id="clearBtn" type="button">Clear</button>
+    </div>
+    <div class="parsed" id="parsed"></div>
+    <div class="grid2">
+      <div><label for="fName">Customer name</label><input id="fName"></div>
+      <div><label for="fPhone">Customer mobile</label><input id="fPhone" type="tel" inputmode="tel"></div>
+      <div><label for="fOrderNo">Order no.</label><input id="fOrderNo"></div>
+      <div><label for="fTotal">Total</label><input id="fTotal" placeholder="₹"></div>
+    </div>
+    <label for="fDate">Delivery date</label><input id="fDate">
+  </div>
+
+  <div class="card">
+    <h2>2. Choose a reply</h2>
+    <label for="mode">Language of the reply</label>
+    <select id="mode">
+      <option value="both">ಕನ್ನಡ + English (both)</option>
+      <option value="kn">ಕನ್ನಡ only</option>
+      <option value="en">English only</option>
+    </select>
+    <label for="fUpi">Your UPI ID / payment details (used in the Payment reply)</label>
+    <input id="fUpi" placeholder="e.g. yourname@upi">
+    <div id="chips"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. Check and send</h2>
+    <p class="help">You can edit the message below before sending. It opens WhatsApp with this customer's chat and the message ready. Just tap Send there.</p>
+    <textarea id="preview" style="min-height:260px"></textarea>
+    <button class="btn wa" id="sendBtn" type="button" style="width:100%;margin-top:10px">Send on WhatsApp to this customer</button>
+    <div class="row">
+      <button class="btn" id="copyBtn" type="button">Copy message</button>
+      <button class="btn" id="dlBtn" type="button">Download all templates (.txt)</button>
+    </div>
+    <div class="note" id="status"></div>
+  </div>
+</main>
+
+<script>
+  // ---------- today's soppu (from prices.json) ----------
+  var live = [];
+  function hasStock(it){ return it.stock !== null && it.stock !== undefined && it.stock !== ""; }
+  function soldOut(it){ return it.available === false || (hasStock(it) && Number(it.stock) <= 0); }
+  function siteUrl(){
+    if (/^https?:$/.test(location.protocol)) return location.origin + location.pathname.replace(/[^\/]*$/, "");
+    return "YOUR-WEBSITE-LINK";
+  }
+
+  // ---------- reply templates: Kannada first, English second ----------
+  var TEMPLATES = [
+    { id:"confirm", group:"Order", label:"✅ Order confirmed",
+      kn:"✅ *ಆರ್ಡರ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ*\nನಮಸ್ಕಾರ {name}! ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ದೃಢೀಕರಿಸಲಾಗಿದೆ.\n\n🛒 *ಆರ್ಡರ್:*\n{items}\n\n💰 *ಒಟ್ಟು:* {total}\n📅 *ಡೆಲಿವರಿ ದಿನಾಂಕ:* {date}\n\nಧನ್ಯವಾದಗಳು! 🙏",
+      en:"✅ *Order confirmed*\nHello {name}! Your order {orderno} is confirmed.\n\n🛒 *Order:*\n{items}\n\n💰 *Total:* {total}\n📅 *Delivery date:* {date}\n\nThank you! 🙏" },
+    { id:"partial", group:"Order", label:"⚠️ Some items not available",
+      kn:"⚠️ *ಕೆಲವು ಸೊಪ್ಪು ಲಭ್ಯವಿಲ್ಲ*\nನಮಸ್ಕಾರ {name}, ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ರಲ್ಲಿ ಈ ಸೊಪ್ಪು ಈಗ ಲಭ್ಯವಿಲ್ಲ:\n{unavailable}\n\n✅ ಉಳಿದ ಸೊಪ್ಪು ಕಳುಹಿಸುತ್ತೇವೆ:\n{availableitems}\n\n💰 *ಹೊಸ ಒಟ್ಟು:* {newtotal}\n📅 *ಡೆಲಿವರಿ ದಿನಾಂಕ:* {date}\n\nಇದು ಸರಿಯೇ? ದಯವಿಟ್ಟು “ಹೌದು” ಎಂದು ತಿಳಿಸಿ. 🙏",
+      en:"⚠️ *Some items are not available*\nHello {name}, sorry. In your order {orderno} these are not available right now:\n{unavailable}\n\n✅ We will send the rest:\n{availableitems}\n\n💰 *New total:* {newtotal}\n📅 *Delivery date:* {date}\n\nIs this OK? Please reply “Yes”. 🙏" },
+    { id:"none", group:"Order", label:"❌ Nothing available",
+      kn:"❌ *ಸೊಪ್ಪು ಲಭ್ಯವಿಲ್ಲ*\nನಮಸ್ಕಾರ {name}, ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ರ ಸೊಪ್ಪು ಆ ದಿನ ಲಭ್ಯವಿಲ್ಲ.\n\nಬೇರೆ ದಿನಾಂಕಕ್ಕೆ ಅಥವಾ ಬೇರೆ ಸೊಪ್ಪಿಗೆ ಆರ್ಡರ್ ಮಾಡಬಹುದು:\n👉 {siteurl}\n\nಧನ್ಯವಾದಗಳು! 🙏",
+      en:"❌ *Not available*\nHello {name}, sorry. The soppu in your order {orderno} is not available on that day.\n\nYou can order for another date or choose other soppu:\n👉 {siteurl}\n\nThank you! 🙏" },
+    { id:"oneday", group:"Order", label:"📅 Order one day before",
+      kn:"📅 *ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ*\nನಮಸ್ಕಾರ {name}, ಕ್ಷಮಿಸಿ. ಅದೇ ದಿನದ ಡೆಲಿವರಿ ಸಾಧ್ಯವಿಲ್ಲ. ತಾಜಾ ಸೊಪ್ಪಿಗಾಗಿ ನಾವು ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ತೆಗೆದುಕೊಳ್ಳುತ್ತೇವೆ.\n\nನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ಅನ್ನು ನಾಳೆ ಅಥವಾ ಬೇರೆ ದಿನಾಂಕಕ್ಕೆ ಮಾಡಬಹುದೇ? ದಯವಿಟ್ಟು ದಿನಾಂಕ ತಿಳಿಸಿ. 🙏",
+      en:"📅 *Please order one day before*\nHello {name}, sorry. Same-day delivery is not possible. To keep the soppu fresh, we take orders one day before.\n\nCan we deliver your order {orderno} tomorrow or on another date? Please tell us the date. 🙏" },
+    { id:"area", group:"Order", label:"📍 Outside delivery area",
+      kn:"📍 *ಡೆಲಿವರಿ ಪ್ರದೇಶ*\nನಮಸ್ಕಾರ {name}, ಕ್ಷಮಿಸಿ. ನಾವು ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ ಡೆಲಿವರಿ ಮಾಡುತ್ತೇವೆ. ನಿಮ್ಮ ವಿಳಾಸ ({address}) ನಮ್ಮ ಡೆಲಿವರಿ ಪ್ರದೇಶದ ಹೊರಗೆ ಇದೆ.\n\nಅರ್ಥಮಾಡಿಕೊಂಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. 🙏",
+      en:"📍 *Delivery area*\nHello {name}, sorry. We deliver only around Chikkabettahalli. Your address ({address}) is outside our delivery area.\n\nThank you for understanding. 🙏" },
+    { id:"location", group:"Order", label:"📍 Ask for location / address",
+      kn:"📍 *ಲೊಕೇಶನ್ ಕಳುಹಿಸಿ*\nನಮಸ್ಕಾರ {name}, ಡೆಲಿವರಿಗಾಗಿ ದಯವಿಟ್ಟು ನಿಮ್ಮ ಮನೆಯ ಲೊಕೇಶನ್ ಕಳುಹಿಸಿ (📎 ಒತ್ತಿ → ಲೊಕೇಶನ್ → ಈಗಿನ ಲೊಕೇಶನ್) ಅಥವಾ ವಿಳಾಸವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಸಿ. 🙏",
+      en:"📍 *Please share your location*\nHello {name}, for delivery please send your home location (tap 📎 → Location → Send your current location) or write your full address. 🙏" },
+    { id:"payment", group:"Order", label:"💳 Payment details",
+      kn:"💳 *ಪಾವತಿ ವಿವರ*\nನಮಸ್ಕಾರ {name}, ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ಒಟ್ಟು: {total}\n\nUPI: {upi}\n\nಪಾವತಿ ಮಾಡಿದ ನಂತರ ದಯವಿಟ್ಟು ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕಳುಹಿಸಿ. ಧನ್ಯವಾದಗಳು! 🙏",
+      en:"💳 *Payment details*\nHello {name}, your order {orderno} total: {total}\n\nUPI: {upi}\n\nAfter paying, please send a screenshot. Thank you! 🙏" },
+    { id:"delay", group:"Delivery", label:"⏰ Delivery will be late",
+      kn:"⏰ *ಡೆಲಿವರಿ ಸ್ವಲ್ಪ ತಡ*\nನಮಸ್ಕಾರ {name}, ಕ್ಷಮಿಸಿ. ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ತಲುಪಲು ಸ್ವಲ್ಪ ತಡವಾಗಬಹುದು. ನಿಮ್ಮ ತಾಳ್ಮೆಗೆ ಧನ್ಯವಾದಗಳು. 🙏",
+      en:"⏰ *Delivery will be a little late*\nHello {name}, sorry. Your order {orderno} may reach you a little late. Thank you for your patience. 🙏" },
+    { id:"out", group:"Delivery", label:"🚚 Out for delivery",
+      kn:"🚚 *ಆರ್ಡರ್ ಹೊರಟಿದೆ*\nನಮಸ್ಕಾರ {name}! ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ಡೆಲಿವರಿಗಾಗಿ ಹೊರಟಿದೆ. ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮ ಮನೆಗೆ ತಲುಪುತ್ತದೆ. 🌿",
+      en:"🚚 *Out for delivery*\nHello {name}! Your order {orderno} is on its way and will reach your home soon. 🌿" },
+    { id:"delivered", group:"Delivery", label:"🎉 Delivered, thank you",
+      kn:"🎉 *ಆರ್ಡರ್ ತಲುಪಿದೆ*\nನಮಸ್ಕಾರ {name}! ನಿಮ್ಮ ಆರ್ಡರ್ {orderno} ತಲುಪಿದೆ. ನಮ್ಮಿಂದ ಖರೀದಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು! 🙏\n\nಸೊಪ್ಪು ಹೇಗಿತ್ತು? ನಿಮ್ಮ ಅನಿಸಿಕೆ ತಿಳಿಸಿ.\nಮತ್ತೆ ಆರ್ಡರ್ ಮಾಡಲು: {siteurl}",
+      en:"🎉 *Delivered*\nHello {name}! Your order {orderno} has been delivered. Thank you for buying from us! 🙏\n\nHow was the soppu? Please share your feedback.\nTo order again: {siteurl}" },
+    { id:"welcome", group:"General", label:"🌿 Welcome + today's list",
+      kn:"🌿 *ಸೊಪ್ಪು ಮನೆಗೆ ಸ್ವಾಗತ!*\nನಮಸ್ಕಾರ {name}! ನಮ್ಮಲ್ಲಿ ಆಸಕ್ತಿ ತೋರಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. 🙏\n\n🛒 *ಇಂದಿನ ಸೊಪ್ಪು ಮತ್ತು ಬೆಲೆ (ಒಂದು ಕಟ್ಟಿಗೆ):*\n{list}\n\n📅 ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ\n📍 ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ ಡೆಲಿವರಿ\n\n👉 ಆರ್ಡರ್ ಮಾಡಲು: {siteurl}",
+      en:"🌿 *Welcome to Soppu Mane!*\nHello {name}! Thank you for your interest. 🙏\n\n🛒 *Today's soppu and price (per bunch):*\n{list}\n\n📅 Please order one day before\n📍 Delivery only around Chikkabettahalli\n\n👉 To order: {siteurl}" },
+    { id:"pricelist", group:"General", label:"📋 Today's list & prices",
+      kn:"🛒 *ಇಂದಿನ ಸೊಪ್ಪು ಮತ್ತು ಬೆಲೆ (ಒಂದು ಕಟ್ಟಿಗೆ):*\n{list}\n\n📅 ಒಂದು ದಿನ ಮುಂಚೆ ಆರ್ಡರ್ ಮಾಡಿ\n📍 ಚಿಕ್ಕಬೆಟ್ಟಹಳ್ಳಿ ಸುತ್ತಮುತ್ತ ಮಾತ್ರ\n\n👉 ಆರ್ಡರ್ ಮಾಡಲು: {siteurl}",
+      en:"🛒 *Today's soppu and price (per bunch):*\n{list}\n\n📅 Please order one day before\n📍 Around Chikkabettahalli only\n\n👉 To order: {siteurl}" },
+    { id:"thanks", group:"General", label:"🙏 Thank you for your interest",
+      kn:"🙏 *ಧನ್ಯವಾದಗಳು!*\nನಮಸ್ಕಾರ {name}! ಸೊಪ್ಪು ಮನೆಯಲ್ಲಿ ಆಸಕ್ತಿ ತೋರಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. ನಿಮಗೆ ಬೇಕಾದಾಗ ಆರ್ಡರ್ ಮಾಡಿ, ತಾಜಾ ಸೊಪ್ಪು ಮನೆ ಬಾಗಿಲಿಗೆ ತಲುಪಿಸುತ್ತೇವೆ. 🌿\n👉 {siteurl}",
+      en:"🙏 *Thank you!*\nHello {name}! Thank you for your interest in Soppu Mane. Order whenever you like, and we will bring fresh soppu to your door. 🌿\n👉 {siteurl}" }
+  ];
+  var DIV = "\n\n━━━━━━━━━━━━━━\n\n";
+
+  // ---------- read an order message ----------
+  var order = { name:"", phone:"", orderno:"", total:"", date:"", address:"", items:[] };
+
+  function parseOrder(text){
+    var o = { name:"", phone:"", orderno:"", total:"", date:"", address:"", items:[] }, m;
+    if ((m = text.match(/SM-\d{4}-\d{2,4}/))) o.orderno = m[0];
+    if ((m = text.match(/👤\s*\*[^*\n]+:\*\s*([^\n]+)/))) o.name = m[1].trim();
+    if ((m = text.match(/📞\s*\*[^*\n]+:\*\s*([^\n]+)/))) o.phone = m[1].replace(/[^\d+]/g, "");
+    if ((m = text.match(/💰\s*\*[^:*\n]+:\s*(₹[\d.,]+)\*/))) o.total = m[1];
+    if ((m = text.match(/📅\s*\*[^*\n]+\*\s*\n([^\n]+)/))) o.date = m[1].trim();
+    if ((m = text.match(/🏠\s*\*[^*\n]+\*\s*\n([^\n]+)/))) o.address = m[1].trim();
+    var re = /^(?:\d️?⃣|▪️?)\s*\*(.+?)\*[ \t]*\n[ \t]+([^\n]+)/gm;
+    while ((m = re.exec(text))) {
+      var parts = m[1].split(" / "), kn = parts[0].trim(), en = (parts[1] || parts[0]).trim(), detail = m[2].replace(/\*/g, "").trim();
+      var q = detail.match(/^\s*([\d.]+)/), a = detail.match(/=\s*₹\s*([\d.,]+)/);
+      o.items.push({ kn:kn, en:en, detail:detail, qty:q ? Number(q[1]) : null, amount:a ? Number(a[1].replace(/,/g, "")) : null, priced: /×/.test(detail) });
+    }
+    return o;
+  }
+
+  function liveFor(it){
+    var en = it.en.toLowerCase();
+    for (var i = 0; i < live.length; i++) {
+      if (live[i].en.toLowerCase() === en || live[i].kn === it.kn) return live[i];
+    }
+    return null;
+  }
+  function money(n){ return "₹" + (Math.round(n * 100) / 100); }
+  function unit(q, lang){ return lang === "kn" ? "ಕಟ್ಟು" : (q > 1 ? "bunches" : "bunch"); }
+
+  // status of each ordered item against today's stock
+  function analyse(){
+    return order.items.map(function(it){
+      var lv = liveFor(it), st = "ok", avail = it.qty, price = lv ? Number(lv.price) : null;
+      if (!lv || !it.priced) st = "other";
+      else if (soldOut(lv)) { st = "out"; avail = 0; }
+      else if (hasStock(lv) && it.qty > Number(lv.stock)) { st = "short"; avail = Number(lv.stock); }
+      return { it:it, st:st, avail:avail, price:price, stock: lv && hasStock(lv) ? Number(lv.stock) : null };
+    });
+  }
+
+  function lineFor(x, lang, useAvail){
+    var it = x.it, nm = lang === "kn" ? it.kn : it.en;
+    if (!it.priced) return "• " + nm + " – " + it.detail;
+    var q = useAvail ? x.avail : it.qty;
+    var amt = (x.st === "ok" && it.amount != null && !useAvail) ? it.amount : (x.price != null ? q * x.price : it.amount);
+    return "• " + nm + " – " + q + " " + unit(q, lang) + (amt != null ? " = " + money(amt) : "");
+  }
+
+  function listFor(lang){
+    if (!live.length) return lang === "kn" ? "• (ಬೆಲೆ ಪಟ್ಟಿ ಲೋಡ್ ಆಗಿಲ್ಲ)" : "• (price list not loaded)";
+    return live.map(function(it){
+      var nm = lang === "kn" ? it.kn : it.en;
+      if (soldOut(it)) return "❌ " + nm + " – " + (lang === "kn" ? "ಲಭ್ಯವಿಲ್ಲ" : "not available");
+      var s = "✅ " + nm + " – ₹" + it.price;
+      if (hasStock(it)) s += " (" + (lang === "kn" ? "ಕೇವಲ " + Math.floor(Number(it.stock)) + " ಕಟ್ಟು" : "only " + Math.floor(Number(it.stock)) + " left") + ")";
+      return s;
+    }).join("\n");
+  }
+
+  function fill(tpl, lang){
+    var an = analyse(), kn = lang === "kn";
+    var un = an.filter(function(x){ return x.st === "out" || x.st === "short"; }).map(function(x){
+      var nm = kn ? x.it.kn : x.it.en;
+      return x.st === "out" ? "• " + nm + " – " + (kn ? "ಲಭ್ಯವಿಲ್ಲ" : "not available")
+                            : "• " + nm + " – " + (kn ? "ಕೇವಲ " + x.stock + " ಕಟ್ಟು ಮಾತ್ರ ಲಭ್ಯ" : "only " + x.stock + " " + unit(x.stock, "en") + " available");
+    });
+    var av = an.filter(function(x){ return x.st !== "out"; }).map(function(x){ return lineFor(x, lang, true); });
+    var newTotal = 0; an.forEach(function(x){ if (x.st === "ok" && x.it.amount != null) newTotal += x.it.amount; else if ((x.st === "ok" || x.st === "short") && x.price != null) newTotal += x.avail * x.price; });
+    var vals = {
+      name: document.getElementById("fName").value.trim() || (kn ? "ಗ್ರಾಹಕರೇ" : "there"),
+      orderno: document.getElementById("fOrderNo").value.trim() || "—",
+      total: document.getElementById("fTotal").value.trim() || "—",
+      date: document.getElementById("fDate").value.trim() || "—",
+      address: order.address || "—",
+      upi: document.getElementById("fUpi").value.trim() || (kn ? "(ನಿಮ್ಮ UPI ಇಲ್ಲಿ ಬರೆಯಿರಿ)" : "(add your UPI ID here)"),
+      siteurl: siteUrl(),
+      items: order.items.length ? an.map(function(x){ return lineFor(x, lang, false); }).join("\n") : (kn ? "• (ಆರ್ಡರ್ ವಿವರ ಇಲ್ಲ)" : "• (no order details)"),
+      unavailable: un.length ? un.join("\n") : (kn ? "• (ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ)" : "• (type here)"),
+      availableitems: av.length ? av.join("\n") : (kn ? "• (ಯಾವುದೂ ಇಲ್ಲ)" : "• (none)"),
+      newtotal: order.items.length ? money(newTotal) : "—",
+      list: listFor(lang)
+    };
+    return tpl.replace(/\{(\w+)\}/g, function(_, k){ return vals[k] != null ? vals[k] : "{" + k + "}"; });
+  }
+
+  function compose(t){
+    var mode = document.getElementById("mode").value;
+    var kn = fill(t.kn, "kn"), en = fill(t.en, "en");
+    return mode === "kn" ? kn : mode === "en" ? en : kn + DIV + en;
+  }
+
+  // ---------- UI ----------
+  var current = null;
+  function say(msg, cls){ var s = document.getElementById("status"); s.textContent = msg; s.className = "note " + (cls || ""); }
+  function refresh(){
+    if (!current) return;
+    document.getElementById("preview").value = compose(current);
+    document.querySelectorAll("#chips .btn").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-id") === current.id); });
+  }
+  function buildChips(){
+    var box = document.getElementById("chips"), groups = {};
+    TEMPLATES.forEach(function(t){ (groups[t.group] = groups[t.group] || []).push(t); });
+    box.innerHTML = "";
+    var names = { Order:"About the order", Delivery:"Delivery", General:"General" };
+    Object.keys(groups).forEach(function(g){
+      var h = document.createElement("div"); h.className = "grp"; h.textContent = names[g] || g; box.appendChild(h);
+      var wrap = document.createElement("div"); wrap.className = "chips";
+      groups[g].forEach(function(t){
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = t.label; b.setAttribute("data-id", t.id);
+        b.onclick = function(){ current = t; refresh(); document.getElementById("preview").scrollIntoView({behavior:"smooth", block:"center"}); };
+        wrap.appendChild(b);
+      });
+      box.appendChild(wrap);
+    });
+  }
+
+  function applyParsed(){
+    var o = parseOrder(document.getElementById("orderText").value);
+    order = o;
+    document.getElementById("fName").value = o.name;
+    document.getElementById("fPhone").value = o.phone;
+    document.getElementById("fOrderNo").value = o.orderno;
+    document.getElementById("fTotal").value = o.total;
+    document.getElementById("fDate").value = o.date;
+    var p = document.getElementById("parsed");
+    if (o.name || o.phone || o.items.length) {
+      var an = analyse(), bad = an.filter(function(x){ return x.st === "out" || x.st === "short"; });
+      p.style.display = "block";
+      p.textContent = "✔ Read: " + (o.name || "—") + " · " + (o.phone || "no phone") + "\n" + o.items.length + " item(s), total " + (o.total || "—") +
+        (bad.length ? "\n⚠️ Not fully available today: " + bad.map(function(x){ return x.it.en; }).join(", ") + " (use “Some items not available”)" : (live.length ? "\n✅ All items are available today" : ""));
+      say("");
+    } else { p.style.display = "none"; }
+    refresh();
+  }
+
+  document.getElementById("orderText").addEventListener("input", applyParsed);
+  ["fName","fOrderNo","fTotal","fDate","fUpi","mode"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", function(){ if (id === "fUpi") { try { localStorage.setItem("soppu_upi", this.value); } catch(e){} } refresh(); });
+  });
+  document.getElementById("pasteBtn").onclick = function(){
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then(function(t){ document.getElementById("orderText").value = t; applyParsed(); },
+        function(){ say("Could not read the clipboard. Please paste into the box above (press and hold → Paste).", "bad"); document.getElementById("orderText").focus(); });
+    } else { say("Please paste into the box above (press and hold → Paste).", "bad"); document.getElementById("orderText").focus(); }
+  };
+  document.getElementById("clearBtn").onclick = function(){
+    document.getElementById("orderText").value = ""; applyParsed();
+    ["fName","fPhone","fOrderNo","fTotal","fDate"].forEach(function(id){ document.getElementById(id).value = ""; });
+    document.getElementById("preview").value = ""; current = null;
+    document.querySelectorAll("#chips .btn").forEach(function(b){ b.classList.remove("on"); });
+  };
+
+  function phoneDigits(){
+    var d = document.getElementById("fPhone").value.replace(/\D/g, "");
+    if (d.length === 10) d = "91" + d;
+    if (d.length === 11 && d.charAt(0) === "0") d = "91" + d.slice(1);
+    return d;
+  }
+  document.getElementById("sendBtn").onclick = function(){
+    var msg = document.getElementById("preview").value.trim();
+    if (!msg) { say("Choose a reply first (step 2).", "bad"); return; }
+    var d = phoneDigits();
+    if (d.length < 11) { say("Customer mobile number is missing or short, so WhatsApp will ask you to choose a contact.", "bad"); }
+    window.open("https://wa.me/" + d + "?text=" + encodeURIComponent(msg), "_blank");
+  };
+  document.getElementById("copyBtn").onclick = function(){
+    var ta = document.getElementById("preview");
+    if (!ta.value.trim()) { say("Choose a reply first (step 2).", "bad"); return; }
+    ta.select(); ta.setSelectionRange(0, 99999);
+    function ok(){ say("Copied ✓", "good"); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(ok, function(){ try { document.execCommand("copy"); ok(); } catch(e){} });
+    else { try { document.execCommand("copy"); ok(); } catch(e){} }
+  };
+  document.getElementById("dlBtn").onclick = function(){
+    var ph = { name:"[name]", orderno:"[order no]", total:"[total]", date:"[date]", address:"[address]", upi:"[your UPI ID]", siteurl:siteUrl(), items:"[items]", unavailable:"[items not available]", availableitems:"[items available]", newtotal:"[new total]", list:"[today's list]" };
+    var out = "SOPPU MANE – REPLY TEMPLATES (Kannada first, English second)\nUse these as WhatsApp Business Quick replies (Business tools → Quick replies) and change the [brackets] each time.\n\n";
+    TEMPLATES.forEach(function(t, i){
+      var f = function(s){ return s.replace(/\{(\w+)\}/g, function(_, k){ return ph[k] || "{" + k + "}"; }); };
+      out += "==============================\n" + (i + 1) + ". " + t.label + "   (shortcut: /" + t.id + ")\n==============================\n" + f(t.kn) + DIV + f(t.en) + "\n\n";
+    });
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([out], { type:"text/plain;charset=utf-8" })); a.download = "soppu-mane-reply-templates.txt";
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  // ---------- start ----------
+  try { var u = localStorage.getItem("soppu_upi"); if (u) document.getElementById("fUpi").value = u; } catch(e){}
+  buildChips();
+  try {
+    fetch("prices.json?v=" + Date.now(), { cache:"no-store" }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .then(function(d){ if (d && Array.isArray(d.items)) { live = d.items; applyParsed(); } }).catch(function(){});
+  } catch(e){}
+  window.__TEMPLATES = TEMPLATES;
+</script>
+</body>
+</html>
