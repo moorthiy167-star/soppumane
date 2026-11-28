@@ -3,21 +3,21 @@
     {
       "en": "Palak",
       "kn": "ಪಾಲಕ್ ಸೊಪ್ಪು",
-      "price": 10,
+      "price": 20,
       "available": true,
       "stock": null
     },
     {
       "en": "Menthe (Methi)",
       "kn": "ಮೆಂತ್ಯ ಸೊಪ್ಪು",
-      "price": 10,
+      "price": 20,
       "available": true,
       "stock": null
     },
     {
       "en": "Kothambari (Coriander)",
       "kn": "ಕೊತ್ತಂಬರಿ ಸೊಪ್ಪು",
-      "price": 10,
+      "price": 20,
       "available": true,
       "stock": null
     },
@@ -31,14 +31,14 @@
     {
       "en": "Dantina Soppu (Amaranth)",
       "kn": "ದಂಟಿನ ಸೊಪ್ಪು",
-      "price": 10,
+      "price": 20,
       "available": true,
       "stock": null
     },
     {
       "en": "Harive Soppu",
       "kn": "ಹರಿವೆ ಸೊಪ್ಪು",
-      "price": 10,
+      "price": 20,
       "available": true,
       "stock": null
     },
